@@ -1,20 +1,16 @@
 import { statusFilters } from "./constans";
 
-const initialState = {
-  tasks: [
-    { id: 0, text: "Learn HTML and CSS", completed: true },
-    { id: 1, text: "Get good at JavaScript", completed: true },
-    { id: 2, text: "Master React", completed: false },
-    { id: 3, text: "Discover Redux", completed: false },
-    { id: 4, text: "Build amazing apps", completed: false },
-  ],
-  filters: {
-    status: statusFilters.all,
-  },
-};
+const tasksInitialState = [
+  { id: 0, text: "Learn HTML and CSS", completed: true },
+  { id: 1, text: "Get good at JavaScript", completed: true },
+  { id: 2, text: "Master React", completed: false },
+  { id: 3, text: "Discover Redux", completed: false },
+  { id: 4, text: "Build amazing apps", completed: false },
+];
+  
 
 // Используем initialState как значение состояния по умолчанию
-export const rootReducer = (state = initialState, action) => {
+const tasksReducer = (state = tasksInitialState, action) => {
   // Редюсер различает экшены по значению свойства type
   switch (action.type) {
     // В зависимости от типа экшена будет выполняться разная логика
@@ -50,20 +46,29 @@ export const rootReducer = (state = initialState, action) => {
             completed: !task.completed,
           };
         }),
-          };
-      
-      case "filters/setStatusFilter":
-      return {
-        ...state,
-        filters: {
-          ...state.filters,
-          status: action.payload,
-        },
-      };
+          };            
     default:
       // Каждый редюсер получает все экшены отправленные в стор.
       // Если редюсер не должен обрабатывать какой-то тип экшена,
       // необходимо вернуть существующее состояние без изменений.
+      return state;
+  }
+};
+
+const filtersInitialState = {
+      status: statusFilters.all,
+  
+};
+
+
+const filterReducer = (state = filtersInitialState, action) => {
+  switch (action.type) {
+    case "filters/setStatusFilter":
+      return {
+        ...state,
+        status: action.payload,
+      };
+    default:
       return state;
   }
 };
