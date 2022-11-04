@@ -1,3 +1,4 @@
+import { combineReducers } from "redux";
 import { statusFilters } from "./constans";
 
 const tasksInitialState = [
@@ -14,39 +15,24 @@ const tasksReducer = (state = tasksInitialState, action) => {
   // Редюсер различает экшены по значению свойства type
   switch (action.type) {
     // В зависимости от типа экшена будет выполняться разная логика
-      case "tasks/addTask": 
+    case "tasks/addTask":
       // Нужно вернуть новый объект состояния
-      return {
-        // в котором есть все данные существующего состояния
-        ...state,
-        // и новый массив задач
-        tasks: [
-          // в котором есть все существующие задачи
-          ...state.tasks,
-          // и объект новой задачи
-          action.payload,
-        ],
-      };
-                
-      case "tasks/deleteTask":
-      return {
-        ...state,
-        tasks: state.tasks.filter(task => task.id !== action.payload),
-          };
-      
-      case "tasks/toggleCompleted":
-      return {
-        ...state,
-        tasks: state.tasks.map(task => {
-          if (task.id !== action.payload) {
-            return task;
-          }
-          return {
-            ...task,
-            completed: !task.completed,
-          };
-        }),
-          };            
+      return [...state, action.payload];
+                      
+    case "tasks/deleteTask":
+      return state.filter(task => task.id !== action.payload);
+          
+    case "tasks/toggleCompleted":
+      return state.map(task => {
+        if (task.id !== action.payload) {
+          return task;
+        }
+        return {
+          ...task,
+          completed: !task.completed,
+        };
+      });
+                     
     default:
       // Каждый редюсер получает все экшены отправленные в стор.
       // Если редюсер не должен обрабатывать какой-то тип экшена,
@@ -61,7 +47,7 @@ const filtersInitialState = {
 };
 
 
-const filterReducer = (state = filtersInitialState, action) => {
+const filtersReducer = (state = filtersInitialState, action) => {
   switch (action.type) {
     case "filters/setStatusFilter":
       return {
@@ -72,3 +58,17 @@ const filterReducer = (state = filtersInitialState, action) => {
       return state;
   }
 };
+
+// export const rootReducer = (state = {}, action) => {
+//   // Возвращаем объект состояния
+//   return {
+//     // Обоим редюсерам передаем только часть состояния за которую они отвечают
+//     tasks: tasksReducer(state.tasks, action),
+//     filters: filtersReducer(state.filters, action),
+//   };
+// };
+
+export const rootReducer = combineReducers({
+  tasks: tasksReducer,
+  filters: filtersReducer,
+});
