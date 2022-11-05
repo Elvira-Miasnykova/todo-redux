@@ -1,7 +1,10 @@
-import { createStore } from "redux";
-import { devToolsEnhancer } from "@redux-devtools/extension";
+//import { createStore } from "redux";
+import { configureStore } from "@reduxjs/toolkit";
+//import { devToolsEnhancer } from "@redux-devtools/extension";
 //import { statusFilters } from "./constans";
-import { rootReducer } from "./reducer";
+//import { tasksReducer, filtersReducer } from "./reducer";
+import { tasksReducer } from "./tasksSlice";
+import { filtersReducer } from "./filtersSlice";
 
 // Начальное значение состояния Redux для корневого редюсера,
 // если не передать параметр preloadedState.
@@ -25,6 +28,13 @@ import { rootReducer } from "./reducer";
 // };
 
 // Создаем расширение стора чтобы добавить инструменты разработчика
-const enhancer = devToolsEnhancer();
+//const enhancer = devToolsEnhancer();
 
-export const store = createStore(rootReducer, enhancer);
+//export const store = createStore(rootReducer, enhancer);
+
+export const store = configureStore({
+    reducer: {
+        tasks: tasksReducer,
+        filters: filtersReducer,
+    },
+});
