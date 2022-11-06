@@ -1,9 +1,20 @@
 //import { createStore } from "redux";
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist'
+import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
 //import { devToolsEnhancer } from "@redux-devtools/extension";
 //import { statusFilters } from "./constans";
 //import { tasksReducer, filtersReducer } from "./reducer";
-import { tasksReducer } from "./tasksSlice";
+import { tasksReducer} from "./tasksSlice";
 import { filtersReducer } from "./filtersSlice";
 
 // Начальное значение состояния Redux для корневого редюсера,
@@ -32,9 +43,29 @@ import { filtersReducer } from "./filtersSlice";
 
 //export const store = createStore(rootReducer, enhancer);
 
+const persistConfig = {
+    key: 'root',
+    storage,
+};
+
+const rootReducer = combineReducers({
+    tasksReducer,
+    filtersReducer,
+})
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+//const persistedFiltersReducer = persistReducer(persistConfig, filtersReducer);
+
 export const store = configureStore({
-    reducer: {
-        tasks: tasksReducer,
-        filters: filtersReducer,
+    reducer: persistedReducer,
+    middleware(getDefaultMiddleware) {
+        return getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    })
     },
+    
 });
+
+export const persistor = persistStore(store);

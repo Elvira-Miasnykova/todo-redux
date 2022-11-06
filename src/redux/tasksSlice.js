@@ -2,7 +2,7 @@ import { createSlice, nanoid } from "@reduxjs/toolkit";
 
 const tasksInitialState = [];
 
-const tasksSlice = createSlice({
+export const tasksSlice = createSlice({
     name: 'tasks',
     initialState: tasksInitialState,
     reducers: {
